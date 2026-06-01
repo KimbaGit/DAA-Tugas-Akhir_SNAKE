@@ -544,8 +544,25 @@
 <!-- MENU -->
 <div id="screen-menu" class="screen active">
   <div class="menu-title">🎲 Ular Tangga</div>
-  <p class="menu-subtitle">Pilih level kesulitan, lalu tantang AI dalam permainan klasik Indonesia!</p>
+  <p class="menu-subtitle">
+    Pilih level kesulitan, lalu tantang AI dalam permainan klasik Indonesia!
+  </p>
   <div class="level-grid" id="levelGrid"></div>
+  <input
+    type="text"
+    id="playerName"
+    placeholder="Masukkan nama pemain"
+    maxlength="20"
+    style="
+      padding:12px;
+      border-radius:10px;
+      border:none;
+      width:100%;
+      max-width:300px;
+      text-align:center;
+      font-size:16px;
+    "
+  >
   <button class="btn-primary" id="btnStart">🎮 Mulai Bermain</button>
 </div>
 
@@ -588,7 +605,7 @@
 
     <div class="divider"></div>
 
-    <div id="messageBox" class="message-box">Selamat bermain! Giliran kamu pertama. 🎉</div>
+    <div id="messageBox" class="message-box">Selamat bermain! 🎉</div>
 
     <div id="hintBox" class="hint-box" style="display:none">
       <div class="hint-title">🔍 BFS Hint</div>
@@ -647,7 +664,7 @@ const LEVELS = {
 };
 
 const PLAYER_COLORS = ["#f7c948","#3498db","#e74c3c","#9b59b6"];
-const PLAYER_NAMES  = ["KAMU","AI-1","AI-2","AI-3"];
+const PLAYER_NAMES  = ["Pemain","AI-1","AI-2","AI-3"];
 
 // ══════════════════════════════════════════════
 //  FISHER-YATES
@@ -727,7 +744,7 @@ function initGame(level) {
     ladders = {...lvl.ladders};
   }
 
-  const players = [{name:"KAMU", color:PLAYER_COLORS[0], pos:0, rolls:0, isAi:false}];
+  const players = [{name:playerName, color:PLAYER_COLORS[0], pos:0, rolls:0, isAi:false}];
   for (let i = 0; i < lvl.aiCount; i++) {
     players.push({name:`AI-${i+1}`, color:PLAYER_COLORS[i+2], pos:0, rolls:0, isAi:true});
   }
@@ -1343,7 +1360,7 @@ function showResult() {
   const lvl = LEVELS[G.level];
 
   document.getElementById('resultTitle').textContent =
-    p.isAi ? `${p.name} Menang! 🤖` : '🎉 Kamu Menang!';
+    p.isAi ? `${p.name} Menang! 🤖` : `🎉 ${p.name} Menang!`;
 
   document.getElementById('resultCard').innerHTML = `
     <div class="result-stat"><span class="label">Pemenang</span><span class="value" style="color:${p.color}">${p.name}</span></div>
@@ -1431,6 +1448,7 @@ function showScreen(id) {
 //  MENU BUILD
 // ═══════════════════════════════════════════════
 let selectedLevel = 1;
+let playerName = "Pemain";
 
 function buildMenu() {
   const grid = document.getElementById('levelGrid');
@@ -1454,6 +1472,8 @@ function buildMenu() {
 }
 
 function startGame() {
+  const inputName = document.getElementById("playerName").value.trim();
+  playerName = inputName || "Pemain";
   initGame(selectedLevel);
   const lvl = LEVELS[selectedLevel];
   const badge = document.getElementById('levelBadge');
